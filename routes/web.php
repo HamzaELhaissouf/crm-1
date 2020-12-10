@@ -26,5 +26,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->post('login', 'AuthController@login');
 
     $router->get('products', 'ProductController@index');
-    $router->post('product', 'ProductController@create');
+    $router->post('products', 'ProductController@create');
+    $router->get('products/read', 'ProductController@read'); // products/read?productId=*
+
+    // for those two endpoints pass the param productId in the request body
+    $router->post('products/update', 'ProductController@update');
+    $router->post('products/delete', 'ProductController@delete');
 });
