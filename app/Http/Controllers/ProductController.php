@@ -99,17 +99,61 @@ class ProductController extends Controller
         $this->validate($request, ['productId' => 'required|numeric']);
 
         $productId = $request->input('productId');
-        $product = Product::find($productId);
+        $product = $this->findProductByID($productId);
 
-        if ($product) {
-            $imagePath = str_replace(env('IMAGES_DIRECTORY'), public_path('images'), $product->image);
-            unlink($imagePath);
-
-            $product->delete();
-
+        if ($this->deleteProduct($productId)) {
             return response()->json(['message' => 'PRODUCT DELETED!'], 200);
         }
 
         return response()->json(['message' => 'PRODUCT NOT FOUND!'], 400);
+    }
+
+    public function multipleDelete(Request $request)
+    {
+        $products = $request->input('products');
+
+        $deleted = true;
+        $output = array();
+
+        foreach ($products as $product) {
+            if (!$this->deleteProduct($product)) {
+                $deleted = false;
+                array_push($output,$product);
+            }
+        }
+
+        if ($deleted) {
+            return response()->json(['message' => 'PRODUCTS DELETED!'], 200);
+        }
+
+        return response()->json([
+            'message' => 'SOME PRODUCTS WERE NOT FOUND!',
+            'products not found' => $output
+        ], 400);
+    }
+
+    private function findProductByID($id)
+    {
+        $product = Product::find($id);
+
+        return $product ? $product : null;
+    }
+
+    private function deleteProduct($id)
+    {
+        $product = $this->findProductByID($id);
+
+        if ($product) {
+            $imagePath = str_replace(env('IMAGES_DIRECTORY'), public_path('images'), $product->image);
+            if (file_exists($imagePath)) {
+                unlink($imagePath);
+            }
+
+            $product->delete();
+
+            return true;
+        }
+
+        return false;
     }
 }
