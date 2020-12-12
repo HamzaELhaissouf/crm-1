@@ -32,5 +32,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     // for those two endpoints pass the param productId in the request body
     $router->post('products/update', 'ProductController@update');
     $router->post('products/delete', 'ProductController@delete');
+
+    // pass an array containing ids named products 
     $router->post('products/multipleDelete', 'ProductController@multipleDelete');
 });

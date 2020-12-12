@@ -99,7 +99,6 @@ class ProductController extends Controller
         $this->validate($request, ['productId' => 'required|numeric']);
 
         $productId = $request->input('productId');
-        $product = $this->findProductByID($productId);
 
         if ($this->deleteProduct($productId)) {
             return response()->json(['message' => 'PRODUCT DELETED!'], 200);
@@ -110,8 +109,9 @@ class ProductController extends Controller
 
     public function multipleDelete(Request $request)
     {
-        $products = $request->input('products');
+        $this->validate($request, ['products' => 'required']);
 
+        $products = $request->input('products');
         $deleted = true;
         $output = array();
 
