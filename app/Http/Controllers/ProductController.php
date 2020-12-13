@@ -118,7 +118,7 @@ class ProductController extends Controller
         foreach ($products as $product) {
             if (!$this->deleteProduct($product)) {
                 $deleted = false;
-                array_push($output,$product);
+                array_push($output, $product);
             }
         }
 
@@ -130,6 +130,65 @@ class ProductController extends Controller
             'message' => 'SOME PRODUCTS WERE NOT FOUND!',
             'products not found' => $output
         ], 400);
+    }
+
+    public function buyProduct(Request $request)
+    {
+        $this->validate($request, [
+            'productId' => 'required|numeric',
+            'quantity' => 'required|numeric|min:1',
+        ]);
+
+        $productId = $request->input('productId');
+        $quantity = $request->input('quantity');
+
+        $product = $this->findProductByID($productId);
+
+        if (!$product) {
+            return response()->json(['message' => 'PRODUCT NOT FOUND!'], 400);
+        }
+
+        if ($product->stock_actuel < $quantity) {
+            return response()->json(['message' => 'QUANITY IN STOCK IS LESS THAN THE ONE REQUESTED!'], 400);
+        }
+        $this->modifyProductQuantity($product, $quantity, "buy");
+
+        return response()->json(['message' => 'OPERARTION DONE!'], 200);
+    }
+
+    public function sellProduct(Request $request)
+    {
+        $this->validate($request, [
+            'productId' => 'required|numeric',
+            'quantity' => 'required|numeric|min:1',
+        ]);
+
+        $productId = $request->input('productId');
+        $quantity = $request->input('quantity');
+
+        $product = $this->findProductByID($productId);
+
+        if (!$product) {
+            return response()->json(['message' => 'PRODUCT NOT FOUND!'], 400);
+        }
+
+        if ($product->stock_actuel < $quantity) {
+            return response()->json(['message' => 'QUANITY IN STOCK IS LESS THAN THE ONE REQUESTED!'], 400);
+        }
+        $this->modifyProductQuantity($product, $quantity, "sell");
+
+        return response()->json(['message' => 'OPERARTION DONE!'], 200);
+    }
+
+    private function modifyProductQuantity($product, $quantity, $operation)
+    {
+        if ($operation == "buy") {
+            $product->stock_actuel += $quantity;
+        } else if ($operation == "sell") {
+            $product->stock_actuel -= $quantity;
+        }
+
+        $product->save();
     }
 
     private function findProductByID($id)

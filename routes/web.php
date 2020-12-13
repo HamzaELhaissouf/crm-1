@@ -29,10 +29,14 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->post('products', 'ProductController@create');
     $router->get('products/read', 'ProductController@read'); // products/read?productId=*
 
-    // for those two endpoints pass the param productId in the request body
+    // for those two endpoints pass the param "productId" in the request body
     $router->post('products/update', 'ProductController@update');
     $router->post('products/delete', 'ProductController@delete');
 
-    // pass an array containing ids named products 
+    // pass an array containing ids the array should be named "products" 
     $router->post('products/multipleDelete', 'ProductController@multipleDelete');
+
+    // requires two params "quantity", "productId"
+    $router->post('products/buyProduct', 'ProductController@buyProduct');
+    $router->post('products/sellProduct', 'ProductController@sellProduct');
 });
