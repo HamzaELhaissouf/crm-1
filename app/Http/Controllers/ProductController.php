@@ -31,7 +31,7 @@ class ProductController extends Controller
         $this->validate($request, ['productId' => 'required|numeric']);
 
         $productId = $request->input('productId');
-        $product = Product::find($productId);
+        $product = $this->findProductByID($productId);
 
         if (!$product) {
             return response()->json(['message' => 'PRODUCT NOT FOUND!'], 400);
@@ -182,11 +182,19 @@ class ProductController extends Controller
 
     private function modifyProductQuantity($product, $quantity, $operation)
     {
+        $montant = 0;
         if ($operation == "buy") {
             $product->stock_actuel += $quantity;
+            $montant = $quantity * $product->prix_de_dachat;
         } else if ($operation == "sell") {
             $product->stock_actuel -= $quantity;
+            $montant = $quantity * $product->prix_de_vente;
         }
+
+        $product->operations()->create([
+            'type' => $operation,
+            'montant' => $montant,
+        ]);
 
         $product->save();
     }
@@ -194,6 +202,7 @@ class ProductController extends Controller
     private function findProductByID($id)
     {
         $product = Product::find($id);
+        $product->load('operations');
 
         return $product ? $product : null;
     }
