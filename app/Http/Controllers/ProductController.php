@@ -180,6 +180,21 @@ class ProductController extends Controller
         return response()->json(['message' => 'OPERARTION DONE!'], 200);
     }
 
+    public function readOperations(Request $request)
+    {
+        $this->validate($request, ['productId' => 'required|numeric']);
+
+        $product = $this->findProductByID($request->input('productId'));
+
+        if (!$product) {
+            return response()->json(['message' => 'PRODUCT NOT FOUND!'], 400);
+        }
+
+        $operations = $product->operations;
+
+        return response()->json(['operations' => $operations], 200);
+    }
+
     private function modifyProductQuantity($product, $quantity, $operation)
     {
         $montant = 0;

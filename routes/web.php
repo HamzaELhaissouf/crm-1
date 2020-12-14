@@ -21,22 +21,33 @@ $router->get('/', function () use ($router) {
 $router->group(['prefix' => 'api'], function () use ($router) {
     // Matches "/api/register
     $router->post('register', 'AuthController@register');
-
     // Matches "/api/login
     $router->post('login', 'AuthController@login');
 
-    $router->get('products', 'ProductController@index');
-    $router->post('products', 'ProductController@create');
-    $router->get('products/read', 'ProductController@read'); // products/read?productId=*
+    // Matches "/api/products/*"
+    $router->group(['prefix' => 'products'], function ($router) {
 
-    // for those two endpoints pass the param "productId" in the request body
-    $router->post('products/update', 'ProductController@update');
-    $router->post('products/delete', 'ProductController@delete');
+        $router->get('/', 'ProductController@index');
+        $router->post('/', 'ProductController@create');
+        $router->get('read', 'ProductController@read'); // /read?productId=*
 
-    // pass an array containing ids the array should be named "products" 
-    $router->post('products/multipleDelete', 'ProductController@multipleDelete');
+        // for those two endpoints pass the param "productId" in the request body
+        $router->post('update', 'ProductController@update');
+        $router->post('delete', 'ProductController@delete');
 
-    // requires two params "quantity", "productId"
-    $router->post('products/buyProduct', 'ProductController@buyProduct');
-    $router->post('products/sellProduct', 'ProductController@sellProduct');
+        // pass an array containing ids the array should be named "" 
+        $router->post('/multipleDelete', 'ProductController@multipleDelete');
+
+        // requires two params "quantity", "productId"
+        $router->post('buyProduct', 'ProductController@buyProduct');
+        $router->post('sellProduct', 'ProductController@sellProduct');
+
+        $router->get('operations', 'ProductController@readOperations');
+    });
+
+    // Matches "/api/products/*"
+    $router->group(['prefix' => 'operations'], function ($router) {
+        $router->get('/', 'OperationController@index');
+        $router->get('/read', 'OperationController@read');
+    });
 });
