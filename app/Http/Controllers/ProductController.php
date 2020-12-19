@@ -22,6 +22,11 @@ class ProductController extends Controller
     {
         $products = Product::all();
 
+        foreach ($products as $product) {
+            $gain = ($product->stock_initial - $product->stock_actuel) * ($product->prix_de_vente - $product->prix_de_dachat);
+            $product->gain = $gain;
+        }
+
         return response()->json(['products' => $products], 200);
     }
 
