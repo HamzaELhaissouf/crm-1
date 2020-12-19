@@ -217,6 +217,10 @@ class ProductController extends Controller
     private function findProductByID($id)
     {
         $product = Product::find($id);
+
+        $gain = ($product->stock_initial - $product->stock_actuel) * ($product->prix_de_vente - $product->prix_de_dachat);
+        $product->gain = $gain;
+
         $product->load('operations');
 
         return $product ? $product : null;
