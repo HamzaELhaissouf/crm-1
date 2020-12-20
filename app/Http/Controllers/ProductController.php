@@ -14,7 +14,6 @@ class ProductController extends Controller
         'stock_actuel' => 'required|numeric|min:0',
         'prix_dachat' => 'required|integer|min:0',
         'montant' => 'required|numeric|min:0',
-        // 'image' => 'image|mimes:jpeg,png,jpg|max:2048'
     ];
 
     // return all products
@@ -79,12 +78,12 @@ class ProductController extends Controller
             $product->montant = $request->input('montant') != null ? $request->input('montant') : $product->montant;
 
             // replace the product image in /images directory
-            if ($request->image) {
-                $imageSrc = $product->image;
-                $image = $request->image;
-                $imageName = str_replace(env('IMAGES_DIRECTORY'), '', $imageSrc);
-                $image->move(public_path('images'), $imageName);
-            }
+            // if ($request->image) {
+            //     $imageSrc = $product->image;
+            //     $image = $request->image;
+            //     $imageName = str_replace(env('IMAGES_DIRECTORY'), '', $imageSrc);
+            //     $image->move(public_path('images'), $imageName);
+            // }
 
             $product->save();
 
