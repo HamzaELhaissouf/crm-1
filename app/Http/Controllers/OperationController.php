@@ -3,13 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Operation;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class OperationController extends Controller
 {
     public function index()
     {
-        $operations = Operation::all();
+        // $operations = Operation::all();
+        $operations = Operation::get()
+                                ->groupBy(function ($op) {
+                                    return Carbon::parse($op->created_at)->format('M');
+                                });
 
         return response()->json(['operations' => $operations], 200);
     }

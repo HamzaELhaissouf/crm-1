@@ -14,7 +14,7 @@ class ProductController extends Controller
         'stock_actuel' => 'required|numeric|min:0',
         'prix_dachat' => 'required|integer|min:0',
         'montant' => 'required|numeric|min:0',
-        // 'image' => 'image|mimes:jpeg,png,jpg|max:2048'
+        'image' => 'image|mimes:jpeg,png,jpg|max:2048'
     ];
 
     // return all products
@@ -59,9 +59,9 @@ class ProductController extends Controller
             'image' => ''
         ]);
 
-        // $imageName = 'product_' . $product->id . '.' . request()->image->getClientOriginalExtension();
-        // request()->image->move(public_path('images'), $imageName);
-        // $product->image = env('IMAGES_DIRECTORY') . '/' . $imageName;
+        $imageName = 'product_' . $product->id . '.' . request()->image->getClientOriginalExtension();
+        request()->image->move(public_path('images'), $imageName);
+        $product->image = env('IMAGES_DIRECTORY') . '/' . $imageName;
 
         $product->save();
 
