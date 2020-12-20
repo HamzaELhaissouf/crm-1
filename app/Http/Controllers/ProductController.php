@@ -21,6 +21,11 @@ class ProductController extends Controller
     {
         $products = Product::all();
 
+        foreach ($products as $product) {
+            $gain = ($product->stock_initial - $product->stock_actuel) * ($product->prix_de_vente - $product->prix_de_dachat);
+            $product->gain = $gain;
+        }
+
         return response()->json(['products' => $products], 200);
     }
 
@@ -179,6 +184,21 @@ class ProductController extends Controller
         return response()->json(['message' => 'OPERARTION DONE!'], 200);
     }
 
+    public function readOperations(Request $request)
+    {
+        $this->validate($request, ['productId' => 'required|numeric']);
+
+        $product = $this->findProductByID($request->input('productId'));
+
+        if (!$product) {
+            return response()->json(['message' => 'PRODUCT NOT FOUND!'], 400);
+        }
+
+        $operations = $product->operations;
+
+        return response()->json(['operations' => $operations], 200);
+    }
+
     private function modifyProductQuantity($product, $quantity, $operation)
     {
         $montant = 0;
@@ -201,6 +221,10 @@ class ProductController extends Controller
     private function findProductByID($id)
     {
         $product = Product::find($id);
+
+        $gain = ($product->stock_initial - $product->stock_actuel) * ($product->prix_de_vente - $product->prix_de_dachat);
+        $product->gain = $gain;
+
         $product->load('operations');
 
         return $product ? $product : null;
