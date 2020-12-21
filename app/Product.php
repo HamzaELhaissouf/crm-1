@@ -10,6 +10,8 @@ class Product extends Model
 
     use HasFactory;
 
+    public $gain;
+
     protected $guarded = [];
 
     public function operations()

@@ -14,10 +14,7 @@ class ProductController extends Controller
         'stock_actuel' => 'required|numeric|min:0',
         'prix_dachat' => 'required|integer|min:0',
         'montant' => 'required|numeric|min:0',
-<<<<<<< HEAD
         'image' => 'image|mimes:jpeg,png,jpg|max:2048'
-=======
->>>>>>> 3c5a3d4a8e9ec2e07675c9946d1a22c64449bcb2
     ];
 
     // return all products

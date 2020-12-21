@@ -8,15 +8,32 @@ use Illuminate\Http\Request;
 
 class OperationController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        // $operations = Operation::all();
         $operations = Operation::get()
-                                ->groupBy(function ($op) {
-                                    return Carbon::parse($op->created_at)->format('M');
-                                });
+            ->groupBy(function ($op) {
+                return Carbon::parse($op->created_at)->format('M');
+            });
 
-        return response()->json(['operations' => $operations], 200);
+        $response = collect();
+        foreach ($operations as $month => $ops) {
+            $monthOps = collect(['operations' => $ops]);
+
+            $sum = 0;
+            foreach ($ops as $op) {
+                if ($op->type == 'sell') {
+                    $sum += $op->montant;
+                } else {
+                    $sum -= $op->montant;
+                }
+            }
+
+            $monthOps->put('sum', $sum);
+
+            $response->put($month, $monthOps);
+        }
+
+        return response()->json(['response' => $response], 200);
     }
 
     public function read(Request $request)
