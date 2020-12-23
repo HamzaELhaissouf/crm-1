@@ -22,6 +22,7 @@ class CreateProductsTable extends Migration
             $table->float('prix_de_dachat');
             $table->float('montant');
             $table->text('image');
+            $table->integer('trending')->default(0);
             $table->timestamps();
         });
     }

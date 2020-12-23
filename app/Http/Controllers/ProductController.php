@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Product;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -20,12 +22,16 @@ class ProductController extends Controller
     // return all products
     public function index()
     {
-        $products = Product::all();
+        $products = DB::table('products')
+            ->orderBy('trending', 'desc')
+            ->get(); // TODO: ->paginate(15);
 
+        /*
         foreach ($products as $product) {
             $gain = ($product->stock_initial - $product->stock_actuel) * ($product->prix_de_vente - $product->prix_de_dachat);
             $product->gain = $gain;
         }
+        */
 
         return response()->json(['products' => $products], 200);
     }
@@ -195,9 +201,30 @@ class ProductController extends Controller
             return response()->json(['message' => 'PRODUCT NOT FOUND!'], 400);
         }
 
-        $operations = $product->operations;
+        $operations = $product->operations
+            ->groupBy(function ($op) {
+                return Carbon::parse($op->created_at)->format('Y-M');
+            });
 
-        return response()->json(['operations' => $operations], 200);
+        $response = collect();
+        foreach ($operations as $month => $ops) {
+            $monthOps = collect(['operations' => $ops]);
+
+            $sum = 0;
+            foreach ($ops as $op) {
+                if ($op->type == 'sell') {
+                    $sum += $op->montant;
+                } else {
+                    $sum -= $op->montant;
+                }
+            }
+
+            $monthOps->put('sum', $sum);
+
+            $response->put($month, $monthOps);
+        }
+
+        return response()->json(['response' => $response], 200);
     }
 
     private function modifyProductQuantity($product, $quantity, $operation)
@@ -208,6 +235,7 @@ class ProductController extends Controller
             $montant = $quantity * $product->prix_de_dachat;
         } else if ($operation == "sell") {
             $product->stock_actuel -= $quantity;
+            $product->trending++; // increment trending attribute
             $montant = $quantity * $product->prix_de_vente;
         }
 
@@ -226,7 +254,7 @@ class ProductController extends Controller
         $gain = ($product->stock_initial - $product->stock_actuel) * ($product->prix_de_vente - $product->prix_de_dachat);
         $product->gain = $gain;
 
-        $product->load('operations');
+        // $product->load('operations');
 
         return $product ? $product : null;
     }
