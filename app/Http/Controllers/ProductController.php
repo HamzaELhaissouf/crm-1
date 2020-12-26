@@ -65,9 +65,12 @@ class ProductController extends Controller
             'image' => ''
         ]);
 
-        $imageName = 'product_' . $product->id . '.' . request()->image->getClientOriginalExtension();
-        request()->image->move(public_path('images'), $imageName);
-        $product->image = env('IMAGES_DIRECTORY') . '/' . $imageName;
+        if($request->image) 
+        {
+            $imageName = 'product_' . $product->id . '.' . request()->image->getClientOriginalExtension();
+            request()->image->move(public_path('images'), $imageName);
+            $product->image = env('IMAGES_DIRECTORY') . '/' . $imageName;
+        }
 
         $product->save();
 
