@@ -245,6 +245,7 @@ class ProductController extends Controller
         $product->operations()->create([
             'type' => $operation,
             'montant' => $montant,
+            'quantity' => $quantity
         ]);
 
         $product->save();
