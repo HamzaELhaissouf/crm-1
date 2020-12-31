@@ -48,6 +48,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     // Matches "/api/products/*"
     $router->group(['prefix' => 'operations'], function ($router) {
         $router->get('/', 'OperationController@index');
+        $router->get('/opResource', 'OperationController@opResource');
         $router->get('/read', 'OperationController@read');
     });
 });

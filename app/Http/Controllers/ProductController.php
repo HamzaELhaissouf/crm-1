@@ -214,15 +214,18 @@ class ProductController extends Controller
             $monthOps = collect(['operations' => $ops]);
 
             $sum = 0;
+            $quantity = 0;
             foreach ($ops as $op) {
                 if ($op->type == 'sell') {
                     $sum += $op->montant;
+                    $quantity += $op->quantity;
                 } else {
                     $sum -= $op->montant;
                 }
             }
 
             $monthOps->put('sum', $sum);
+            $monthOps->put('selledQuantity', $quantity);
 
             $response->put($month, $monthOps);
         }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Operation;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use App\Http\Resources\Operation as OperationResource;
 
 class OperationController extends Controller
 {
@@ -12,7 +13,7 @@ class OperationController extends Controller
     {
         $operations = Operation::get()
             ->groupBy(function ($op) {
-                return Carbon::parse($op->created_at)->format('M');
+                return Carbon::parse($op->created_at)->format('y-M');
             });
 
         $response = collect();
@@ -34,6 +35,11 @@ class OperationController extends Controller
         }
 
         return response()->json(['response' => $response], 200);
+    }
+
+    public function opResource()
+    {
+        return response()->json(['data' => OperationResource::collection(Operation::all())], 200);
     }
 
     public function read(Request $request)
