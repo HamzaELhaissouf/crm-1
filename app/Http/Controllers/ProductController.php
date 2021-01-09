@@ -79,9 +79,9 @@ class ProductController extends Controller
 
     public function update(Request $request)
     {
-        $this->validate($request, ['productId' => 'required|numeric']);
+        $this->validate($request, ['id' => 'required|numeric']);
 
-        $productId = $request->input('productId');
+        $productId = $request->input('id');
         $product = Product::find($productId);
 
         if ($product) {
@@ -110,9 +110,9 @@ class ProductController extends Controller
 
     public function delete(Request $request)
     {
-        $this->validate($request, ['productId' => 'required|numeric']);
+        $this->validate($request, ['id' => 'required|numeric']);
 
-        $productId = $request->input('productId');
+        $productId = $request->input('id');
 
         if ($this->deleteProduct($productId)) {
             return response()->json(['message' => 'PRODUCT DELETED!'], 200);
