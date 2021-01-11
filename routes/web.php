@@ -43,6 +43,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('sellProduct', 'ProductController@sellProduct');
 
         $router->get('operations', 'ProductController@readOperations');
+
+        // get top5 trending products
+        $router->get('trending', 'ProductController@trendingProducts');
+
     });
 
     // Matches "/api/products/*"

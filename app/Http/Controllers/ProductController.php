@@ -65,8 +65,7 @@ class ProductController extends Controller
             'image' => ''
         ]);
 
-        if($request->image) 
-        {
+        if ($request->image) {
             $imageName = 'product_' . $product->id . '.' . request()->image->getClientOriginalExtension();
             request()->image->move(public_path('images'), $imageName);
             $product->image = env('IMAGES_DIRECTORY') . '/' . $imageName;
@@ -231,6 +230,16 @@ class ProductController extends Controller
         }
 
         return response()->json(['response' => $response], 200);
+    }
+
+    public function trendingProducts()
+    {
+        $products = DB::table('products')
+            ->orderBy('trending', 'desc')
+            ->take(5)
+            ->get();
+
+        return response()->json(['products' => $products], 200);
     }
 
     private function modifyProductQuantity($product, $quantity, $operation)
