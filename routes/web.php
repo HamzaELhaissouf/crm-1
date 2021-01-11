@@ -55,4 +55,12 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/opResource', 'OperationController@opResource');
         $router->get('/read', 'OperationController@read');
     });
+
+    $router->group(['prefix' => 'clients'], function ($router) {
+        $router->get('/', 'ClientController@index');
+        $router->post('/', 'ClientController@create');
+        $router->get('/read', 'ClientController@read');
+        $router->post('/update', 'ClientController@update');
+        $router->post('/delete', 'ClientController@delete');
+    });
 });
