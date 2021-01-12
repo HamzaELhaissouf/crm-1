@@ -6,6 +6,8 @@ use App\Product;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Http\Resources\Product as ProductResource;
+use App\Operation;
 
 class ProductController extends Controller
 {
@@ -234,12 +236,16 @@ class ProductController extends Controller
 
     public function trendingProducts()
     {
-        $products = DB::table('products')
-            ->orderBy('trending', 'desc')
-            ->take(5)
-            ->get();
+        $operations =Operation::groupBy('product_id')
+        ->selectRaw('product_id , products.designation,  sum(quantity) as sellQuantity')
+        ->join('products', 'products.id', '=', 'operations.product_id')
+        ->orderBy('sellQuantity' ,'desc')
+        ->having('sellQuantity' ,'>' , 0)
+        ->take(5)
+        ->get();
 
-        return response()->json(['products' => $products], 200);
+        // dd($operations);
+        return response()->json($operations, 200);
     }
 
     private function modifyProductQuantity($product, $quantity, $operation)
