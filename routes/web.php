@@ -43,6 +43,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('sellProduct', 'ProductController@sellProduct');
 
         $router->get('operations', 'ProductController@readOperations');
+
+        // get top5 trending products
+        $router->get('trending', 'ProductController@trendingProducts');
+
     });
 
     // Matches "/api/products/*"
@@ -52,5 +56,13 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('/cards' , 'OperationController@cards');
         $router->get('/opResource', 'OperationController@opResource');
         $router->get('/read', 'OperationController@read');
+    });
+
+    $router->group(['prefix' => 'clients'], function ($router) {
+        $router->get('/', 'ClientController@index');
+        $router->post('/', 'ClientController@create');
+        $router->get('/read', 'ClientController@read');
+        $router->post('/update', 'ClientController@update');
+        $router->post('/delete', 'ClientController@delete');
     });
 });
