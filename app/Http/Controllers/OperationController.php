@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Client;
 use App\Operation;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -70,7 +71,7 @@ class OperationController extends Controller
         $montant = Product::sum('stock_actuel') * Product::sum('prix_de_vente');
         $sells = Operation::whereMonth('created_at', Carbon::now()->month)->where('type', 'sell')->sum('prix_achat') * Operation::whereMonth('created_at', Carbon::now()->month)->where('type', 'sell')->sum('quantity');
         $buys = Operation::whereMonth('created_at', Carbon::now()->month)->where('type', 'sell')->sum('prix_achat') * Operation::whereMonth('created_at', Carbon::now()->month)->where('type', 'buy')->sum('quantity');
-        $monthlyMontant = Product::whereMonth('created_at', Carbon::now()->month)->sum('stock_actuel') * Product::whereMonth('created_at', Carbon::now()->month)->sum('prix_de_vente');
+        $clients = Client::count();
 
         return response()->json(['cards' => [
             ['data' => $products, 'title' => 'Total produits', 'color' => 'red lighten-3', 'icon' => 'fas fa-cubes'],
@@ -78,7 +79,7 @@ class OperationController extends Controller
             ['data' => $montant, 'currency' => 'DH', 'title' => 'Montant total', 'color' => 'blue lighten-3', 'icon' => 'fas fa-euro-sign'],
             ['data' => $sells, 'title' => 'Total Achat', 'color' => 'red lighten-3', 'icon' => 'fas fa-truck'],
             ['data' => $buys, 'title' => 'Total vente', 'color' => 'green lighten-3', 'icon' => 'fas fa-credit-card'],
-            ['data' => $monthlyMontant, 'currency' => 'DH', 'title' => 'Montant total (mensuel)', 'color' => 'blue lighten-3', 'icon' => 'fas fa-euro-sign'],
+            ['data' => $clients,  'title' => 'Effictive clients', 'color' => 'blue lighten-3', 'icon' => 'fas fa-person'],
         ]], 200);
     }
 
