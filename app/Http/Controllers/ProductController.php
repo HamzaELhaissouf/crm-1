@@ -196,9 +196,9 @@ class ProductController extends Controller
 
     public function readOperations(Request $request)
     {
-        $this->validate($request, ['productId' => 'required|numeric']);
+        // $this->validate($request, ['productId' => 'requkired|numeric']);
 
-        $product = $this->findProductByID($request->input('productId'));
+        $product = $this->findProductByID(1);
 
         if (!$product) {
             return response()->json(['message' => 'PRODUCT NOT FOUND!'], 400);

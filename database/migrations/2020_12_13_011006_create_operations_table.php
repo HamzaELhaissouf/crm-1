@@ -17,7 +17,7 @@ class CreateOperationsTable extends Migration
             $table->bigIncrements('id');
             $table->enum('type', ['sell', 'buy']);
             $table->integer('quantity');
-            $table->float('montant');
+            $table->float('prix_achat');
             $table->unsignedBigInteger('product_id');
             $table->timestamps();
 

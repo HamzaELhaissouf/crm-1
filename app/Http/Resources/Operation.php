@@ -8,9 +8,7 @@ class Operation extends JsonResource
 {
     public function toArray($request)
     {
-        return [
-            "" . $this->created_at => $this->montant
-        ];
+        return ['date'=>$this->created_at->format('Y-m-d') ,  'value'=> $this->quantity * $this->prix_achat , 'type'=>$this->type ];
         // return parent::toArray($this);
     }
 }

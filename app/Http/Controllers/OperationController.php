@@ -6,6 +6,7 @@ use App\Operation;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Resources\Operation as OperationResource;
+use App\Product;
 
 class OperationController extends Controller
 {
@@ -61,4 +62,61 @@ class OperationController extends Controller
 
         return $operation ? $operation : null;
     }
+
+    public function cards()
+    {
+        $products = Product::count();
+        $unites  = Product::sum('stock_actuel');
+        $montant = Product::sum('stock_actuel') * Product::sum('prix_de_vente');
+        $sells = Operation::whereMonth('created_at', Carbon::now()->month)->where('type', 'sell')->sum('prix_achat') * Operation::whereMonth('created_at', Carbon::now()->month)->where('type', 'sell')->sum('quantity');
+        $buys = Operation::whereMonth('created_at', Carbon::now()->month)->where('type', 'sell')->sum('prix_achat') * Operation::whereMonth('created_at', Carbon::now()->month)->where('type', 'buy')->sum('quantity');
+        $monthlyMontant = Product::whereMonth('created_at', Carbon::now()->month)->sum('stock_actuel') * Product::whereMonth('created_at', Carbon::now()->month)->sum('prix_de_vente');
+
+        return response()->json(['cards' => [
+            ['data' => $products, 'title' => 'Total produits', 'color' => 'red lighten-3', 'icon' => 'fas fa-cubes'],
+            ['data' => $unites, 'title' => 'Total unites', 'color' => 'green lighten-3', 'icon' => 'fas fa-drum-steelpan'],
+            ['data' => $montant, 'currency' => 'DH', 'title' => 'Montant total', 'color' => 'blue lighten-3', 'icon' => 'fas fa-euro-sign'],
+            ['data' => $sells, 'title' => 'Total Achat', 'color' => 'red lighten-3', 'icon' => 'fas fa-truck'],
+            ['data' => $buys, 'title' => 'Total vente', 'color' => 'green lighten-3', 'icon' => 'fas fa-credit-card'],
+            ['data' => $monthlyMontant, 'currency' => 'DH', 'title' => 'Montant total (mensuel)', 'color' => 'blue lighten-3', 'icon' => 'fas fa-euro-sign'],
+        ]], 200);
+    }
+
+
+    public function operationByMonth(Request $request)
+    {
+        $this->validate($request, ['id' => 'required|numeric', 'month' => 'required']);
+
+        $id = $request->input('id');
+        $month = $request->input('month');
+
+        $operations   =  Operation::whereMonth('created_at', $month)->where('product_id', $id)->get();
+        return response()->json(['data' => OperationResource::collection($operations)], 200);
+    }
+    /*
+     public function operationByMonth(Request $request)
+    {
+         $this->validate($request, ['id' => 'required|numeric' , 'month'=>'required']);
+
+        $id = 1; //$request->input('id');
+        $month = 1;//$request->input('month');
+      
+        $operations =  Operation::whereMonth('created_at' ,$month )->where('product_id' , $id )->get();
+        $dataArray = [];
+        foreach ($operations as $operation) {
+            $dataArray[]= $operation["created_at"].": ". $operation["montant"];
+            // $dataArray[] = $operation["created_at"].",". $operation["montant"];
+        }
+        // $n = [];
+        // foreach($dataArray as $arr) {
+        //     $arr1 = explode(': ', $arr);
+        //     $key = $arr1[0];
+        //     $value = $arr1[1];
+        //     $n/ = [$key => $value];
+        // }
+        // dd($n);
+//dd(OperationResource::collection($newOperations)->collapse());
+        return response()->json(['data' => $dataArray], 200);
+    } 
+    */
 }

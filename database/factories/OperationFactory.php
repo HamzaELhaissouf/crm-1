@@ -13,7 +13,7 @@ class OperationFactory extends Factory
     {
         return [
             'type' => $this->faker->randomElement(['sell', 'buy']),
-            'montant' => $this->faker->numberBetween(999.99, 100009.99),
+            'prix_achat' => $this->faker->numberBetween(10.99, 100.99),
             'quantity' => $this->faker->numberBetween(5,100),
             'created_at'=> $this->faker->dateTimeBetween('2019-01-01 00:00:00', 'now'),
         ];
