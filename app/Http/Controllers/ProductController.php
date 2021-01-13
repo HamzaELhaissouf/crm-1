@@ -155,10 +155,12 @@ class ProductController extends Controller
         $this->validate($request, [
             'productId' => 'required|numeric',
             'quantity' => 'required|numeric|min:1',
+
         ]);
 
         $productId = $request->input('productId');
         $quantity = $request->input('quantity');
+        $price = $request->input('price');
 
         $product = $this->findProductByID($productId);
 
@@ -169,7 +171,7 @@ class ProductController extends Controller
         if ($product->stock_actuel < $quantity) {
             return response()->json(['message' => 'QUANITY IN STOCK IS LESS THAN THE ONE REQUESTED!'], 400);
         }
-        $this->modifyProductQuantity($product, $quantity, "buy");
+        $this->modifyProductQuantity($product, $quantity, "buy" , $price);
 
         return response()->json(['message' => 'OPERARTION DONE!'], 200);
     }
@@ -183,6 +185,8 @@ class ProductController extends Controller
 
         $productId = $request->input('productId');
         $quantity = $request->input('quantity');
+        $price = $request->input('price');
+
 
         $product = $this->findProductByID($productId);
 
@@ -193,7 +197,7 @@ class ProductController extends Controller
         if ($product->stock_actuel < $quantity) {
             return response()->json(['message' => 'QUANITY IN STOCK IS LESS THAN THE ONE REQUESTED!'], 400);
         }
-        $this->modifyProductQuantity($product, $quantity, "sell");
+        $this->modifyProductQuantity($product, $quantity, "sell" , $price);
 
         return response()->json(['message' => 'OPERARTION DONE!'], 200);
     }
@@ -257,7 +261,7 @@ class ProductController extends Controller
         return response()->json(NotificationResource::collection($products), 200);
     }
 
-    private function modifyProductQuantity($product, $quantity, $operation)
+    private function modifyProductQuantity($product, $quantity, $operation , $price)
     {
         $montant = 0;
         if ($operation == "buy") {
@@ -271,7 +275,7 @@ class ProductController extends Controller
 
         $product->operations()->create([
             'type' => $operation,
-            'montant' => $montant,
+            'prix_achat' => $price, //price of the opration
             'quantity' => $quantity
         ]);
 

@@ -12,8 +12,9 @@ class Notification extends JsonResource
     {
         return [
             'date'=>Carbon::now()->format('d-m-Y') , 
-            'message' => "l ' état de  produit :  " . $this->designation . "est critique ",
-            'stock_actuel' => $this->stock_actuel
+            'message' =>  $this->designation,
+            'stock_actuel' => $this->stock_actuel,
+            'etat' => 'faible stock'
     ];
         // return parent::toArray($this);
     }
