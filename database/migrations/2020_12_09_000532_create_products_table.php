@@ -19,6 +19,7 @@ class CreateProductsTable extends Migration
             $table->float('prix_de_vente');
             $table->integer('stock_initial');
             $table->integer('stock_actuel');
+            $table->integer('stock_min');
             $table->float('prix_de_dachat');
             $table->float('montant');
             $table->text('image');

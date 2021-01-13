@@ -74,12 +74,12 @@ class OperationController extends Controller
         $clients = Client::count();
 
         return response()->json(['cards' => [
-            ['data' => $products, 'title' => 'Total produits', 'color' => 'red lighten-3', 'icon' => 'fas fa-cubes'],
-            ['data' => $unites, 'title' => 'Total unites', 'color' => 'green lighten-3', 'icon' => 'fas fa-drum-steelpan'],
-            ['data' => $montant, 'currency' => 'DH', 'title' => 'Montant total', 'color' => 'blue lighten-3', 'icon' => 'fas fa-euro-sign'],
-            ['data' => $sells, 'title' => 'Total Achat', 'color' => 'red lighten-3', 'icon' => 'fas fa-truck'],
-            ['data' => $buys, 'title' => 'Total vente', 'color' => 'green lighten-3', 'icon' => 'fas fa-credit-card'],
-            ['data' => $clients,  'title' => 'Effictive clients', 'color' => 'blue lighten-3', 'icon' => 'fas fa-person'],
+            ['data' => $products, 'title' => 'Total produits', 'color' => 'red lighten-1', 'icon' => 'fas fa-cubes'],
+            ['data' => $unites, 'title' => 'Total unites', 'color' => 'green lighten-1', 'icon' => 'fas fa-drum-steelpan'],
+            ['data' => $montant, 'currency' => 'DH', 'title' => 'Montant total', 'color' => 'blue lighten-1', 'icon' => 'fas fa-euro-sign'],
+            ['data' => $sells, 'title' => 'Total Achat', 'color' => 'red lighten-2', 'icon' => 'fas fa-shopping-cart'],
+            ['data' => $buys, 'title' => 'Total vente', 'color' => 'green lighten-2', 'icon' => 'fas fa-credit-card'],
+            ['data' => $clients,  'title' => 'Effictive clients', 'color' => 'blue lighten-2', 'icon' => 'fas fa-users'],
         ]], 200);
     }
 

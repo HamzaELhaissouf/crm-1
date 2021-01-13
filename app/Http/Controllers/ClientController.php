@@ -48,9 +48,9 @@ class ClientController extends Controller
 
     public function update(Request $request)
     {
-        $this->validate($request, ['clientId' => 'required|numeric']);
+        $this->validate($request, ['id' => 'required|numeric']);
 
-        Client::where('id', $request->input('clientId'))
+        Client::where('id', $request->input('id'))
                     ->update([
                         'name' => $request->input('name'),
                         'email' => $request->input('email'),
@@ -64,9 +64,9 @@ class ClientController extends Controller
 
     public function delete(Request $request)
     {
-        $this->validate($request, ['clientId' => 'required|numeric']);
+        $this->validate($request, ['id' => 'required|numeric']);
 
-        $client = Client::find($request->input('clientId'));
+        $client = Client::find($request->input('id'));
         $client->delete();
 
         return response()->json(['message' => 'CLIENT DELETED!'], 200);

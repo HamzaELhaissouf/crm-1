@@ -47,6 +47,9 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         // get top5 trending products
         $router->get('trending', 'ProductController@trendingProducts');
 
+        //
+        $router->get('lowStock' , 'ProductController@lowStockProducts');
+
     });
 
     // Matches "/api/products/*"

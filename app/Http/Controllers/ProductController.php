@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\Product as ProductResource;
+use App\Http\Resources\Notification as NotificationResource;
 use App\Operation;
 
 class ProductController extends Controller
@@ -62,6 +63,7 @@ class ProductController extends Controller
             'prix_de_vente' => $request->input('prix_de_vente'),
             'stock_initial' => $request->input('stock_initial'),
             'stock_actuel' => $request->input('stock_actuel'),
+            'stock_min' => $request->input('stock_min'),
             'prix_de_dachat' => $request->input('prix_dachat'),
             'montant' => $request->input('montant'),
             'image' => ''
@@ -90,6 +92,7 @@ class ProductController extends Controller
             $product->prix_de_vente = $request->input('prix_de_vente') != null ? $request->input('prix_de_vente') : $product->prix_de_vente;
             $product->stock_initial = $request->input('stock_initial') != null ? $request->input('stock_initial') : $product->stock_initial;
             $product->stock_actuel = $request->input('stock_actuel') != null ? $request->input('stock_actuel') : $product->stock_actuel;
+            $product->stock_min = $request->input('stock_min') != null ? $request->input('stock_min') : $product->stock_min;
             $product->prix_de_dachat = $request->input('prix_de_dachat') != null ? $request->input('prix_de_dachat') : $product->prix_de_dachat;
             $product->montant = $request->input('montant') != null ? $request->input('montant') : $product->montant;
 
@@ -236,16 +239,22 @@ class ProductController extends Controller
 
     public function trendingProducts()
     {
-        $operations =Operation::groupBy('product_id')
-        ->selectRaw('product_id , products.designation,  sum(quantity) as sellQuantity')
-        ->join('products', 'products.id', '=', 'operations.product_id')
-        ->orderBy('sellQuantity' ,'desc')
-        ->having('sellQuantity' ,'>' , 0)
-        ->take(5)
-        ->get();
+        $operations = Operation::groupBy('product_id')
+            ->selectRaw('product_id , products.designation,  sum(quantity) as sellQuantity')
+            ->join('products', 'products.id', '=', 'operations.product_id')
+            ->orderBy('sellQuantity', 'desc')
+            ->having('sellQuantity', '>', 0)
+            ->take(5)
+            ->get();
 
         // dd($operations);
         return response()->json($operations, 200);
+    }
+
+    public function lowStockProducts()
+    {
+        $products = Product::whereRaw("stock_min  >  stock_actuel")->get();
+        return response()->json(NotificationResource::collection($products), 200);
     }
 
     private function modifyProductQuantity($product, $quantity, $operation)
