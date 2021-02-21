@@ -26,7 +26,7 @@ class ProductController extends Controller
     public function index()
     {
         $products = DB::table('products')
-            ->orderBy('trending', 'desc')
+            ->orderBy('designation', 'desc')
             ->get(); // TODO: ->paginate(15);
 
         /*
