@@ -299,10 +299,10 @@ class ProductController extends Controller
         $product = $this->findProductByID($id);
 
         if ($product) {
-            $imagePath = str_replace(env('IMAGES_DIRECTORY'), public_path('images'), $product->image);
-            if (file_exists($imagePath)) {
-                unlink($imagePath);
-            }
+            // $imagePath = str_replace(env('IMAGES_DIRECTORY'), public_path('images'), $product->image);
+            // if (file_exists($imagePath)) {
+            //     unlink($imagePath);
+            // }
 
             $product->delete();
 
