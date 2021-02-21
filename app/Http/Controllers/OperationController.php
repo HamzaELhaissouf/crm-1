@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Resources\Operation as OperationResource;
 use App\Product;
+use Illuminate\Support\Facades\DB;
 
 class OperationController extends Controller
 {
@@ -66,17 +67,21 @@ class OperationController extends Controller
 
     public function cards()
     {
+        // dd(Product::sum('stock_actuel'));
+
         $products = Product::count();
         $unites  = Product::sum('stock_actuel');
-        $montant = Product::sum('stock_actuel') * Product::sum('prix_de_dachat');
+        $montant = DB::select('select sum(`prix_de_dachat` * `stock_actuel`) as montant from products');
         $sells = Operation::whereMonth('created_at', Carbon::now()->month)->where('type', 'sell')->sum('prix_achat') * Operation::whereMonth('created_at', Carbon::now()->month)->where('type', 'sell')->sum('quantity');
         $buys = Operation::whereMonth('created_at', Carbon::now()->month)->where('type', 'sell')->sum('prix_achat') * Operation::whereMonth('created_at', Carbon::now()->month)->where('type', 'buy')->sum('quantity');
         $clients = Client::count();
 
+// dd($montant);
+
         return response()->json(['cards' => [
             ['data' => $products, 'title' => 'Total produits', 'color' => 'red lighten-1', 'icon' => 'fas fa-cubes'],
             ['data' => $unites, 'title' => 'Total unites', 'color' => 'green lighten-1', 'icon' => 'fas fa-drum-steelpan'],
-            ['data' => $montant, 'currency' => 'DH', 'title' => 'Montant total', 'color' => 'blue lighten-1', 'icon' => 'fas fa-euro-sign'],
+            ['data' => $montant[0]->montant, 'currency' => 'DH', 'title' => 'Montant total', 'color' => 'blue lighten-1', 'icon' => 'fas fa-euro-sign'],
             ['data' => $sells, 'title' => 'Total Achat', 'color' => 'red lighten-2', 'icon' => 'fas fa-shopping-cart'],
             ['data' => $buys, 'title' => 'Total vente', 'color' => 'green lighten-2', 'icon' => 'fas fa-credit-card'],
             ['data' => $clients,  'title' => 'Effictive clients', 'color' => 'blue lighten-2', 'icon' => 'fas fa-users'],
