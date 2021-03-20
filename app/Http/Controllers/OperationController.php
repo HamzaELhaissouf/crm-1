@@ -71,7 +71,7 @@ class OperationController extends Controller
 
         $products = Product::count();
         $unites  = Product::sum('stock_actuel');
-        $montant = DB::select('select sum(`prix_de_dachat` * `stock_actuel`) as montant from products');
+        $montant = DB::select('select sum(`prix_de_vente` * `stock_actuel`) as montant from products');
         $sells = Operation::whereMonth('created_at', Carbon::now()->month)->where('type', 'sell')->sum('prix_achat') * Operation::whereMonth('created_at', Carbon::now()->month)->where('type', 'sell')->sum('quantity');
         $buys = Operation::whereMonth('created_at', Carbon::now()->month)->where('type', 'sell')->sum('prix_achat') * Operation::whereMonth('created_at', Carbon::now()->month)->where('type', 'buy')->sum('quantity');
         $clients = Client::count();

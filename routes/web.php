@@ -16,6 +16,10 @@
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
+$router->get('/newPassword', function () use ($router) {
+    echo app('hash')->make("tester");
+    // return $router->app->version();
+});
 
 // API route group
 $router->group(['prefix' => 'api'], function () use ($router) {
