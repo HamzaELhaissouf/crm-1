@@ -243,6 +243,11 @@ class ProductController extends Controller
 
     public function trendingProducts()
     {
+
+        config()->set('database.connections.mysql.strict', false);
+        DB::reconnect(); //important as the existing connection if any would be in strict mode
+        
+
         $operations = Operation::groupBy('product_id')
             ->selectRaw('product_id , products.designation,  sum(quantity) as sellQuantity')
             ->join('products', 'products.id', '=', 'operations.product_id')
@@ -250,6 +255,9 @@ class ProductController extends Controller
             ->having('sellQuantity', '>', 0)
             ->take(5)
             ->get();
+
+            config()->set('database.connections.mysql.strict', true);
+            DB::reconnect(); // reconnect the db with strict mode true
 
         // dd($operations);
         return response()->json($operations, 200);
