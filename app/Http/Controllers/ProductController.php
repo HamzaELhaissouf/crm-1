@@ -168,9 +168,9 @@ class ProductController extends Controller
             return response()->json(['message' => 'PRODUCT NOT FOUND!'], 400);
         }
 
-        if ($product->stock_actuel < $quantity) {
-            return response()->json(['message' => 'QUANITY IN STOCK IS LESS THAN THE ONE REQUESTED!'], 400);
-        }
+        // if ($product->stock_actuel < $quantity) {
+        //     return response()->json(['message' => 'QUANITY IN STOCK IS LESS THAN THE ONE REQUESTED!'], 400);
+        // }
         $this->modifyProductQuantity($product, $quantity, "buy" , $price);
 
         return response()->json(['message' => 'OPERARTION DONE!'], 200);
